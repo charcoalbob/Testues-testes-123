@@ -23,7 +23,7 @@ USER_AGENT = (
 
 YAHOO_CHART_URL = "https://{host}.finance.yahoo.com/v8/finance/chart/{symbol}?range={range}&interval=1d"
 # Fallbacks for when Yahoo rate-limits shared CI runners (HTTP 429).
-STOOQ_URL = "https://stooq.com/q/d/l/?s={symbol}&i=d"
+FRANKFURTER_URL = "https://api.frankfurter.dev/v1/{start}..?base=USD&symbols=CNY"
 GOLD_API_URL = "https://api.gold-api.com/price/{symbol}"
 FRED_CSV_URL = "https://fred.stlouisfed.org/graph/fredgraph.csv?id={series}"
 # CFTC Disaggregated Futures-Only report; 084691 is COMEX silver.
@@ -79,28 +79,16 @@ def fetch_yahoo_closes(symbol: str, range_: str = "1y") -> dict[str, float]:
     raise last_exc
 
 
-# --- Stooq daily CSV (xagusd, xauusd, usdcny) ---
+# --- Frankfurter (ECB reference rates): USD/CNY daily history ---
 
-def parse_stooq_csv(text: str) -> dict[str, float]:
-    lines = text.strip().splitlines()
-    if not lines or not lines[0].lower().startswith("date,"):
-        raise ValueError(f"unexpected response: {text[:80]!r}")
-    header = lines[0].lower().split(",")
-    i_date, i_close = header.index("date"), header.index("close")
-    out = {}
-    for line in lines[1:]:
-        cells = line.split(",")
-        try:
-            out[cells[i_date]] = float(cells[i_close])
-        except (IndexError, ValueError):
-            continue
-    return out
+def parse_frankfurter(payload: dict) -> dict[str, float]:
+    return {day: float(rates["CNY"]) for day, rates in payload.get("rates", {}).items()
+            if "CNY" in rates}
 
 
-def fetch_stooq_closes(symbol: str, days: int = 366) -> dict[str, float]:
-    closes = parse_stooq_csv(_get(STOOQ_URL.format(symbol=symbol)).decode("utf-8", "replace"))
-    cutoff = (dt.date.today() - dt.timedelta(days=days)).isoformat()
-    return {d: v for d, v in closes.items() if d >= cutoff}
+def fetch_frankfurter_usdcny(days: int = 366) -> dict[str, float]:
+    start = (dt.date.today() - dt.timedelta(days=days)).isoformat()
+    return parse_frankfurter(json.loads(_get(FRANKFURTER_URL.format(start=start))))
 
 
 # --- gold-api.com live spot (XAG, XAU): today only, no history ---
@@ -128,7 +116,7 @@ def parse_fred_csv(text: str) -> dict[str, float]:
 
 
 def fetch_fred(series: str, days: int = 366) -> dict[str, float]:
-    closes = parse_fred_csv(_get(FRED_CSV_URL.format(series=series)).decode("utf-8", "replace"))
+    closes = parse_fred_csv(_get(FRED_CSV_URL.format(series=series), timeout=90).decode("utf-8", "replace"))
     cutoff = (dt.date.today() - dt.timedelta(days=days)).isoformat()
     return {d: v for d, v in closes.items() if d >= cutoff}
 

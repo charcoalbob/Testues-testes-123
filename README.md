@@ -31,9 +31,17 @@ Every threshold is a heuristic and lives in `tracker/config.py`.
 
 ## Automatic vs manual data
 
-Fetched automatically: silver, gold and USD/CNY prices (Yahoo Finance), CFTC
-Commitments of Traders, and COMEX warehouse stocks. CME often blocks automated
-downloads; when it does, the report says so and uses `data/manual.json` instead.
+Fetched automatically, trying each source in order:
+
+- Silver and gold: Yahoo Finance futures history, then gold-api.com spot. Yahoo
+  rate-limits GitHub's runners, so in practice the spot price is recorded once per
+  run and price history builds up day by day.
+- USD/CNY: Yahoo, then Frankfurter (ECB reference rates), then FRED.
+- CFTC Commitments of Traders: a year of weekly history on the first run.
+- COMEX warehouse stocks: CME blocks automated downloads from GitHub, so this
+  usually falls back to `data/manual.json`.
+
+The report lists which source supplied each series and why the others failed.
 
 No free API exists for these, so you add them to `data/manual.json`:
 

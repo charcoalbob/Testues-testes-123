@@ -31,13 +31,11 @@ def fetch_all(rows: list[dict], today: str) -> dict[str, str]:
     # gives COMEX futures history; the rest are spot or FX fallbacks.
     chains = {
         "silver_usd": [("Yahoo SI=F", lambda: sources.fetch_yahoo_closes("SI=F")),
-                       ("Stooq xagusd", lambda: sources.fetch_stooq_closes("xagusd")),
                        ("gold-api XAG spot", lambda: sources.fetch_gold_api_spot("XAG"))],
         "gold_usd": [("Yahoo GC=F", lambda: sources.fetch_yahoo_closes("GC=F")),
-                     ("Stooq xauusd", lambda: sources.fetch_stooq_closes("xauusd")),
                      ("gold-api XAU spot", lambda: sources.fetch_gold_api_spot("XAU"))],
         "usdcny": [("Yahoo CNY=X", lambda: sources.fetch_yahoo_closes("CNY=X")),
-                   ("Stooq usdcny", lambda: sources.fetch_stooq_closes("usdcny")),
+                   ("Frankfurter (ECB)", sources.fetch_frankfurter_usdcny),
                    ("FRED DEXCHUS", lambda: sources.fetch_fred("DEXCHUS"))],
     }
     for col, chain in chains.items():

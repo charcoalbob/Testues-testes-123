@@ -30,11 +30,10 @@ class ParserTests(unittest.TestCase):
         closes = sources.parse_yahoo_chart(json.loads((FIX / "yahoo_si.json").read_text()))
         self.assertEqual(closes, {"2026-09-25": 61.42, "2026-09-29": 60.82})
 
-    def test_stooq_skips_bad_rows_and_rejects_non_csv(self):
-        self.assertEqual(sources.parse_stooq_csv((FIX / "stooq_xag.csv").read_text()),
-                         {"2026-09-29": 60.82})
-        with self.assertRaises(ValueError):
-            sources.parse_stooq_csv("Get your apikey at stooq.com")
+    def test_frankfurter_usdcny(self):
+        payload = json.loads((FIX / "frankfurter_cny.json").read_text())
+        self.assertEqual(sources.parse_frankfurter(payload),
+                         {"2026-09-25": 7.1203, "2026-09-26": 7.115})
 
     def test_gold_api_spot(self):
         payload = json.loads((FIX / "gold_api_xag.json").read_text())
