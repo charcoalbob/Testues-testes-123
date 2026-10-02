@@ -13,10 +13,10 @@
 | | Signal | Value | Detail |
 |---|---|---|---|
 | ⚪ | Physical vs paper premium | n/a | Add shanghai_price_cny_per_kg entries to data/manual.json. |
-| 🟢 | COMEX registered inventory | 99.2M oz | As of 2026-09-29. Need 30+ days of history for the drawdown test. |
+| 🟢 | COMEX registered inventory | 99.2M oz | As of 2026-09-29. Need 30+ days of history for the drawdown test. Covers 18.6% of open interest (2026-09-22). |
 | ⚪ | Silver lease rate (1M) | n/a | Add lease_rate_1m_pct entries to data/manual.json. |
 | 🟢 | Exchange rule changes | 0 in window | None in window. Last logged: 2026-02-06 margin_hike. |
-| ⚪ | Commercial shorts vs inventory | n/a | No CFTC data yet. |
+| 🟢 | Commercial shorts vs inventory | 42.0% of OI | +5.1 pts since 2026-06-23; registered n/a over the same span. |
 | 🟢 | State actor disclosures | 0 recent | None in window. Last logged: 2026-01-01 China. |
 
 ## Rules
@@ -30,5 +30,9 @@
 
 ## Data sources
 
-- network: skipped (--offline)
+- Yahoo SI=F: failed: HTTP Error 429: Too Many Requests
+- Yahoo GC=F: failed: HTTP Error 429: Too Many Requests
+- Yahoo CNY=X: failed: HTTP Error 429: Too Many Requests
+- CFTC COT: ok (latest 2026-09-22)
+- CME silver stocks: failed: HTTP Error 403: Forbidden (use data/manual.json)
 - manual comex_registered_oz: 1 entries
