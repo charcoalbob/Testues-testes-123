@@ -1,0 +1,28 @@
+{
+  "_help": "Hand-entered data for things with no free API. Dates are YYYY-MM-DD. Add new entries to the end of each list; the tracker re-reads the whole file every run.",
+
+  "_lease_rate_help": "One-month silver lease rate in percent (e.g. from Bloomberg, Kitco commentary, or LBMA-derived SIFO/forward rates).",
+  "lease_rate_1m_pct": [],
+
+  "_shanghai_help": "SGE Ag(T+D) settlement price in CNY per kg, as quoted (VAT-inclusive). The tracker strips 13% VAT and converts to USD/oz.",
+  "shanghai_price_cny_per_kg": [],
+
+  "_registered_help": "COMEX registered silver in troy ounces. Only needed when the CME download fails (it often blocks automated requests).",
+  "comex_registered_oz": [
+    {"date": "2026-09-29", "value": 99200000, "source": "metalcharts.org/comex/silver"}
+  ],
+
+  "_exchange_help": "type is one of: margin_hike, liquidation_only, forced_cash_settlement, trade_cancellation, trading_halt, position_limit_change, delivery_default.",
+  "exchange_events": [
+    {"date": "2026-01-28", "venue": "CME", "type": "margin_hike", "note": "Silver margins raised during record rally (Bloomberg)"},
+    {"date": "2026-01-30", "venue": "CME", "type": "margin_hike", "note": "Silver margins to 15% of contract value; 31% intraday crash"},
+    {"date": "2026-02-06", "venue": "CME", "type": "margin_hike", "note": "Silver margins raised from 15% to 18%"}
+  ],
+
+  "_state_help": "Disclosed state or central bank silver purchases, reserve programs, or export controls. Dates marked approx are month-level.",
+  "state_actions": [
+    {"date": "2024-09-30", "actor": "Russia", "note": "Budget plan to buy ~51bn rubles of precious metals incl. silver for state reserves over 3 years (approx date)"},
+    {"date": "2025-05-15", "actor": "Saudi Arabia (SAMA)", "note": "SLV holdings disclosed in US 13F filing (approx date)"},
+    {"date": "2026-01-01", "actor": "China", "note": "Silver export restrictions take effect"}
+  ]
+}
