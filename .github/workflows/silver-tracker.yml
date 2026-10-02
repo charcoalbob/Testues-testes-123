@@ -17,6 +17,7 @@ concurrency:
 jobs:
   run:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -25,6 +26,7 @@ jobs:
       - run: pip install -r requirements.txt
       - run: python -m unittest -v
       - run: python -m tracker
+        timeout-minutes: 8
       - name: Commit updated data and reports
         run: |
           git config user.name "github-actions[bot]"

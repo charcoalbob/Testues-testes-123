@@ -32,10 +32,20 @@ CFTC_SILVER_CODE = "084691"
 CME_STOCKS_URL = "https://www.cmegroup.com/delivery_reports/Silver_stocks.xls"
 
 
-def _get(url: str, timeout: int = 30) -> bytes:
+def _get(url: str, timeout: int = 30, max_bytes: int = 20_000_000) -> bytes:
+    """GET with a total deadline; urlopen's timeout only bounds each socket read."""
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "*/*"})
+    deadline = time.monotonic() + timeout
+    chunks, size = [], 0
     with urllib.request.urlopen(req, timeout=timeout) as resp:
-        return resp.read()
+        while chunk := resp.read(65536):
+            chunks.append(chunk)
+            size += len(chunk)
+            if time.monotonic() > deadline:
+                raise TimeoutError(f"download exceeded {timeout}s")
+            if size > max_bytes:
+                raise ValueError(f"response larger than {max_bytes} bytes")
+    return b"".join(chunks)
 
 
 # --- Yahoo Finance daily closes (SI=F silver, GC=F gold, CNY=X USD/CNY) ---

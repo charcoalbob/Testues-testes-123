@@ -43,6 +43,7 @@ def fetch_all(rows: list[dict], today: str) -> dict[str, str]:
     for col, chain in chains.items():
         failures = []
         for name, fetch in chain:
+            print(f"fetching {name}...", flush=True)
             try:
                 closes = fetch()
                 if not closes:
@@ -59,6 +60,7 @@ def fetch_all(rows: list[dict], today: str) -> dict[str, str]:
         if failures:
             status[col] += " | failed: " + "; ".join(failures)
 
+    print("fetching CFTC COT...", flush=True)
     try:
         cot = sources.fetch_cot()
         for rec in cot:
@@ -67,6 +69,7 @@ def fetch_all(rows: list[dict], today: str) -> dict[str, str]:
     except Exception as exc:  # noqa: BLE001
         status["CFTC COT"] = f"failed: {exc}"
 
+    print("fetching CME silver stocks...", flush=True)
     try:
         stocks = sources.fetch_cme_stocks()
         if "registered_oz" not in stocks:
