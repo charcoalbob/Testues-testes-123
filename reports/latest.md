@@ -6,7 +6,9 @@
 
 ## Market context
 
-- No price data yet.
+- Silver $61.14 (2026-10-02)
+- +0.0% from tracked high of $61.14 (2026-10-02)
+- Gold/silver ratio 68.4
 
 ## Signals
 
@@ -30,9 +32,9 @@
 
 ## Data sources
 
-- Yahoo SI=F: failed: HTTP Error 429: Too Many Requests
-- Yahoo GC=F: failed: HTTP Error 429: Too Many Requests
-- Yahoo CNY=X: failed: HTTP Error 429: Too Many Requests
+- silver_usd: ok via gold-api XAG spot (1 days) | failed: Yahoo SI=F: HTTP Error 429: Too Many Requests; Stooq xagusd: unexpected response: '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="robots" content="no'
+- gold_usd: ok via gold-api XAU spot (1 days) | failed: Yahoo GC=F: HTTP Error 429: Too Many Requests; Stooq xauusd: unexpected response: '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="robots" content="no'
+- usdcny: failed | failed: Yahoo CNY=X: HTTP Error 429: Too Many Requests; Stooq usdcny: unexpected response: '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="robots" content="no'; FRED DEXCHUS: The read operation timed out
 - CFTC COT: ok (latest 2026-09-22)
 - CME silver stocks: failed: HTTP Error 403: Forbidden (use data/manual.json)
 - manual comex_registered_oz: 1 entries
