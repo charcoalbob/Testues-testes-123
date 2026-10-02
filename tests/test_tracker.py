@@ -30,6 +30,20 @@ class ParserTests(unittest.TestCase):
         closes = sources.parse_yahoo_chart(json.loads((FIX / "yahoo_si.json").read_text()))
         self.assertEqual(closes, {"2026-09-25": 61.42, "2026-09-29": 60.82})
 
+    def test_stooq_skips_bad_rows_and_rejects_non_csv(self):
+        self.assertEqual(sources.parse_stooq_csv((FIX / "stooq_xag.csv").read_text()),
+                         {"2026-09-29": 60.82})
+        with self.assertRaises(ValueError):
+            sources.parse_stooq_csv("Get your apikey at stooq.com")
+
+    def test_gold_api_spot(self):
+        payload = json.loads((FIX / "gold_api_xag.json").read_text())
+        self.assertEqual(sources.parse_gold_api(payload), {"2026-10-02": 60.91})
+
+    def test_fred_skips_holidays(self):
+        self.assertEqual(sources.parse_fred_csv((FIX / "fred_dexchus.csv").read_text()),
+                         {"2026-09-24": 7.1203, "2026-09-26": 7.115})
+
     def test_cot_handles_double_underscore_columns(self):
         rows = sources.parse_cot_rows(json.loads((FIX / "cftc_silver.json").read_text()))
         self.assertEqual([r["date"] for r in rows], ["2026-09-15", "2026-09-22"])
